@@ -11,6 +11,7 @@ public class ApplicationProperty implements Serializable{
     public static final String LABEL="label";
     public static final String PROFILE="profile";
     public static final String SOURCE="source";
+    public static final String APPLICATION_NAME="applicationName";
 
     private String label;
     private String profile;

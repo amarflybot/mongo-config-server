@@ -40,6 +40,15 @@ public class ApplicationPropertyResource {
         return ResponseEntity.ok(applicationProperty);
     }
 
+    @DeleteMapping(value = "/{profile}/{applicationName}")
+    ResponseEntity<?> deleteApplication(@PathVariable String profile,
+                                        @PathVariable String applicationName) {
+        ApplicationProperty applicationProperty =
+                new ApplicationProperty("master",profile,null,applicationName);
+        service.deleteByProfileAndApplicationName(applicationProperty);
+        return ResponseEntity.ok(applicationProperty);
+    }
+
     /**
      *
      * @param profile
@@ -66,5 +75,21 @@ public class ApplicationPropertyResource {
                 new ApplicationProperty("master",profile,null,null);
         List<ApplicationProperty> applicationPropertyReturned = service.getByProfile(applicationProperty);
         return ResponseEntity.ok(applicationPropertyReturned);
+    }
+
+    /**
+     *
+     * @param profile
+     * @return
+     */
+    @PostMapping(value = "/{profile}/{applicationName}")
+    ResponseEntity<?> updatePropertyByKey(@PathVariable String profile,
+                                          @PathVariable String applicationName,
+                                          @RequestBody Map property){
+        Source source = new Source(property);
+        ApplicationProperty applicationProperty =
+                new ApplicationProperty("master",profile,source,applicationName);
+        service.updatePropertyByKey(applicationProperty);
+        return ResponseEntity.ok(applicationProperty);
     }
 }

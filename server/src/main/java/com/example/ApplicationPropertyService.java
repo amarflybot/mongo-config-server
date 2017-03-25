@@ -71,4 +71,8 @@ public class ApplicationPropertyService {
     public List<ApplicationProperty> getByProfile(ApplicationProperty applicationProperty) {
         return propertyDao.getByProfile(applicationProperty);
     }
+
+    public void deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
+        propertyDao.deleteByProfileAndApplicationName(applicationProperty);
+    }
 }

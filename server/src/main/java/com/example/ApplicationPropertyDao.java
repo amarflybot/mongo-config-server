@@ -2,6 +2,7 @@ package com.example;
 
 import com.example.model.ApplicationProperty;
 import com.example.model.Source;
+import com.mongodb.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.*;
 
+import static com.example.model.ApplicationProperty.APPLICATION_NAME;
 import static com.example.model.ApplicationProperty.LABEL;
 import static com.example.model.ApplicationProperty.PROFILE;
 
@@ -114,6 +116,7 @@ public class ApplicationPropertyDao {
         Map<String, Object> objectToSave = new Hashtable<>();
         objectToSave.put(LABEL, applicationProperty.getLabel());
         objectToSave.put(PROFILE, applicationProperty.getProfile());
+        objectToSave.put(APPLICATION_NAME, applicationProperty.getApplicationName());
         objectToSave.put(ApplicationProperty.SOURCE, applicationProperty.getSource());
         return objectToSave;
     }
@@ -133,10 +136,19 @@ public class ApplicationPropertyDao {
         List<ApplicationProperty> applicationProperties = new ArrayList<>();
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
-        List<ApplicationProperty> applicationProperties1 = mongoTemplate.find(query, ApplicationProperty.class);
-        applicationProperties1.forEach( applicationProperty1 -> {
-
+        Set<String> collectionNames = mongoTemplate.getDb().getCollectionNames();
+        collectionNames.forEach(collectionName -> {
+            List<ApplicationProperty> applicationProperties1 = mongoTemplate.find(query, ApplicationProperty.class, collectionName);
+            applicationProperties.add(applicationProperties1.get(applicationProperties1.size()-1));
         });
-        return null;
+        return applicationProperties;
+    }
+
+    public void deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
+        query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
+        WriteResult remove = mongoTemplate.remove(query, ApplicationProperty.class, applicationProperty.getApplicationName());
+
     }
 }
