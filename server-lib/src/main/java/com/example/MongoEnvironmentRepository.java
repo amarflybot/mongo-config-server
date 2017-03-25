@@ -29,7 +29,7 @@ public class MongoEnvironmentRepository implements EnvironmentRepository {
     private static final String PROFILE = "profile";
     private static final String DEFAULT = "default";
     private static final String DEFAULT_PROFILE = null;
-    private static final String DEFAULT_LABEL = null;
+    private static final String DEFAULT_LABEL = "master";
 
     private MongoTemplate mongoTemplate;
     private MapFlattener mapFlattener;
