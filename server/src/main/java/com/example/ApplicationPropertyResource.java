@@ -29,7 +29,7 @@ public class ApplicationPropertyResource {
      * @param properties
      * @return
      */
-    @PostMapping(value = "/{profile}/{applicationName}")
+    @PutMapping(value = "/{profile}/{applicationName}")
     ResponseEntity<?> addNewApplication(@PathVariable String profile,
                           @PathVariable String applicationName,
                           @RequestBody Map properties) {
