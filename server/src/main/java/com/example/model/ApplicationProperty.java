@@ -1,7 +1,9 @@
 
 package com.example.model;
 
-public class ApplicationProperty {
+import java.io.Serializable;
+
+public class ApplicationProperty implements Serializable{
 
     public static final String LABEL="label";
     public static final String PROFILE="profile";
