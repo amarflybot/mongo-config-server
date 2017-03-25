@@ -70,6 +70,9 @@ public class MongoEnvironmentRepository implements EnvironmentRepository {
                 Map<String, Object> source = (LinkedHashMap<String, Object>) propertySource.getSource().get(PROPERTY);
                 source = beautifySource(source);
                 PropertySource propSource = new PropertySource(sourceName, source);
+                if (environment.getPropertySources().size() > 0) {
+                    environment.getPropertySources().remove(0);
+                }
                 environment.add(propSource);
             }
         }
@@ -138,6 +141,11 @@ public class MongoEnvironmentRepository implements EnvironmentRepository {
 
     public static String beautifySource(String key) {
         String newKey = key.replace(MAP_KEY_DOT_REPLACEMENT,".");
+        return newKey;
+    }
+
+    public static String uglifySource(String key) {
+        String newKey = key.replace(".",MAP_KEY_DOT_REPLACEMENT);
         return newKey;
     }
 

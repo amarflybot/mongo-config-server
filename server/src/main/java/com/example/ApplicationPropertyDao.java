@@ -25,11 +25,16 @@ public class ApplicationPropertyDao {
 
 
     public void save(ApplicationProperty applicationProperty) {
+        Map<String, Object> objectToSave = getStringObjectMap(applicationProperty);
+        mongoTemplate.save(objectToSave, applicationProperty.getApplicationName());
+    }
+
+    private Map<String, Object> getStringObjectMap(ApplicationProperty applicationProperty) {
         Map<String, Object> objectToSave = new Hashtable<>();
         objectToSave.put(LABEL, applicationProperty.getLabel());
         objectToSave.put(PROFILE, applicationProperty.getProfile());
         objectToSave.put(ApplicationProperty.SOURCE, applicationProperty.getSource());
-        mongoTemplate.save(objectToSave, applicationProperty.getApplicationName());
+        return objectToSave;
     }
 
     public void delete(String collectionName){
@@ -41,19 +46,32 @@ public class ApplicationPropertyDao {
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
-        List<MongoEnvironmentRepository.MongoPropertySource> propertySources =
-                mongoTemplate.find(query, MongoEnvironmentRepository.MongoPropertySource.class, applicationProperty.getApplicationName());
-
-        propertySources.forEach(mongoPropertySource -> {
-            mongoPropertySource.getSource().forEach((key, val) -> {
-                String keyBeautified = MongoEnvironmentRepository.beautifySource(key);
-                if (objectEntry.getKey().equals(keyBeautified)){
-                    mongoPropertySource.setSourceByKey(keyBeautified,val);
-                }
-            });
-        });
-        //applicationProperty.setSource();
+        ApplicationProperty applicationProperties =
+                mongoTemplate.findOne(query, ApplicationProperty.class, applicationProperty.getApplicationName());
+        String uglifySource = MongoEnvironmentRepository.uglifySource(objectEntry.getKey());
+        Object o = applicationProperties.getSource().getAllProperties().get(objectEntry.getKey());
+        if (o == null) {
+            throw new RuntimeException("Property Not Found");
+        }
+        applicationProperties.getSource().getAllProperties().put(objectEntry.getKey(), objectEntry.getValue());
+        Map<String, Object> objectToSave = getStringObjectMap(applicationProperties);
+        mongoTemplate.save(objectToSave, applicationProperty.getApplicationName());
 
     }
 
+    public void addPropertyByKey(ApplicationProperty applicationProperty) {
+        Query query = new Query();
+        query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
+        query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
+        ApplicationProperty applicationProperties =
+                mongoTemplate.findOne(query, ApplicationProperty.class, applicationProperty.getApplicationName());
+
+        applicationProperty.getSource().getAllProperties().forEach((key, val) -> {
+            applicationProperties.getSource().addProperty(key, val);
+        });
+
+        Map<String, Object> stringObjectMap = getStringObjectMap(applicationProperties);
+        mongoTemplate.save(stringObjectMap, applicationProperties.getApplicationName());
+
+    }
 }

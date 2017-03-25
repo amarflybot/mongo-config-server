@@ -22,6 +22,7 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
 public class MongoEnvironmentRepositoryConfiguration {
 
     public static final String MAP_KEY_DOT_REPLACEMENT = "\uff0e";
+
     @Autowired
     private ConfigurableEnvironment environment;
 

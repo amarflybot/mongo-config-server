@@ -27,4 +27,8 @@ public class ApplicationPropertyService {
     public void updatePropertyByKey(ApplicationProperty applicationProperty){
         propertyDao.updatePropertyByKey(applicationProperty);
     }
+
+    public void addPropertyByKey(ApplicationProperty applicationProperty){
+        propertyDao.addPropertyByKey(applicationProperty);
+    }
 }
