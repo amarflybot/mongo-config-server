@@ -80,6 +80,8 @@ public class ApplicationPropertyResource {
     /**
      *
      * @param profile
+     * @param applicationName
+     * @param property
      * @return
      */
     @PostMapping(value = "/{profile}/{applicationName}")
