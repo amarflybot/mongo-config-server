@@ -3,6 +3,9 @@ package com.example.model;
 
 import java.io.Serializable;
 
+/**
+ *
+ */
 public class ApplicationProperty implements Serializable{
 
     public static final String LABEL="label";
@@ -87,6 +90,17 @@ public class ApplicationProperty implements Serializable{
         if (getLabel() != null ? !getLabel().equals(that.getLabel()) : that.getLabel() != null) return false;
         if (getProfile() != null ? !getProfile().equals(that.getProfile()) : that.getProfile() != null) return false;
         if (getSource() != null ? !getSource().equals(that.getSource()) : that.getSource() != null) return false;
+        return getApplicationName() != null ? getApplicationName().equals(that.getApplicationName()) : that.getApplicationName() == null;
+    }
+
+    public boolean equalByLabelAndProfile(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ApplicationProperty)) return false;
+
+        ApplicationProperty that = (ApplicationProperty) o;
+
+        if (getLabel() != null ? !getLabel().equals(that.getLabel()) : that.getLabel() != null) return false;
+        if (getProfile() != null ? !getProfile().equals(that.getProfile()) : that.getProfile() != null) return false;
         return getApplicationName() != null ? getApplicationName().equals(that.getApplicationName()) : that.getApplicationName() == null;
     }
 
