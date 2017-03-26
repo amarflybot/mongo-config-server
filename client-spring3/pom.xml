@@ -4,19 +4,40 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <parent>
+    <!--<parent>
         <groupId>com.example</groupId>
         <artifactId>mongo-config-server</artifactId>
         <version>0.0.1-SNAPSHOT</version>
-    </parent>
+    </parent>-->
 
     <groupId>com.example</groupId>
     <artifactId>client-spring3</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <dependencies>
+    <properties>
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <cglib.version>2.2.2</cglib.version>
+    </properties>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-core</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib</artifactId>
+            <version>${cglib.version}</version>
+        </dependency>
     </dependencies>
-    
+
 </project>

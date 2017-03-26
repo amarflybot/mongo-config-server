@@ -1,0 +1,7 @@
+This shall be used if @Configuration does not work.
+    <bean class="com.example.HttpPropertyPlaceholderConfigurer">
+
+		<property name="location">
+			<value>classpath:application.properties</value>
+		</property>
+	</bean>
