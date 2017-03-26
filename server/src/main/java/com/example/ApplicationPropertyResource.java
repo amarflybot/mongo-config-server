@@ -85,13 +85,19 @@ public class ApplicationPropertyResource {
      * @return
      */
     @PostMapping(value = "/{profile}/{applicationName}")
-    ResponseEntity<?> updatePropertyByKey(@PathVariable String profile,
+    ResponseEntity<?> upsertPropertyByKey(@PathVariable String profile,
                                           @PathVariable String applicationName,
                                           @RequestBody Map property){
         Source source = new Source(property);
         ApplicationProperty applicationProperty =
                 new ApplicationProperty("master",profile,source,applicationName);
-        service.updatePropertyByKey(applicationProperty);
+        service.upsertPropertyByKey(applicationProperty);
         return ResponseEntity.ok(applicationProperty);
+    }
+
+    @GetMapping
+    ResponseEntity<?> getAllApplications(){
+        List<String> allApps = service.getAll();
+        return ResponseEntity.ok(allApps);
     }
 }

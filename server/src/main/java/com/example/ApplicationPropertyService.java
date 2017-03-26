@@ -47,8 +47,8 @@ public class ApplicationPropertyService {
      *
      * @param applicationProperty
      */
-    public void updatePropertyByKey(ApplicationProperty applicationProperty){
-        propertyDao.updatePropertyByKey(applicationProperty);
+    public void upsertPropertyByKey(ApplicationProperty applicationProperty){
+        propertyDao.upsertPropertyByKey(applicationProperty);
     }
 
     /**
@@ -74,5 +74,9 @@ public class ApplicationPropertyService {
 
     public void deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
         propertyDao.deleteByProfileAndApplicationName(applicationProperty);
+    }
+
+    public List<String> getAll() {
+        return propertyDao.getAll();
     }
 }

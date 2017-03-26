@@ -50,7 +50,7 @@ public class ApplicationPropertyDao {
      *
      * @param applicationProperty
      */
-    public void updatePropertyByKey(ApplicationProperty applicationProperty) {
+    public void upsertPropertyByKey(ApplicationProperty applicationProperty) {
         final Map.Entry<String, Object> objectEntry = applicationProperty.getSource().getAllProperties().entrySet().iterator().next();
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
@@ -60,7 +60,8 @@ public class ApplicationPropertyDao {
         String uglifySource = MongoEnvironmentRepository.uglifySource(objectEntry.getKey());
         Object o = applicationProperties.getSource().getAllProperties().get(objectEntry.getKey());
         if (o == null) {
-            throw new RuntimeException("Property Not Found");
+            System.out.println("Property not found adding new property "+objectEntry.getKey()
+                    + " " + objectEntry.getValue());
         }
         applicationProperties.getSource().getAllProperties().put(objectEntry.getKey(), objectEntry.getValue());
         Map<String, Object> objectToSave = getStringObjectMap(applicationProperties);
@@ -150,5 +151,10 @@ public class ApplicationPropertyDao {
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
         WriteResult remove = mongoTemplate.remove(query, ApplicationProperty.class, applicationProperty.getApplicationName());
 
+    }
+
+    public List<String> getAll() {
+        Set<String> collectionNames = mongoTemplate.getDb().getCollectionNames();
+        return new ArrayList<>(new TreeSet<>(collectionNames));
     }
 }

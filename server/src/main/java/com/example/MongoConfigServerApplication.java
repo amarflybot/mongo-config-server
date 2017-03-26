@@ -6,13 +6,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.data.mongodb.MongoDbFactory;
-import org.springframework.data.mongodb.core.convert.DbRefResolver;
-import org.springframework.data.mongodb.core.convert.DefaultDbRefResolver;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
-import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
-
-import java.util.*;
 
 @SpringBootApplication
 @EnableMongoConfigServer
@@ -45,7 +38,7 @@ public class MongoConfigServerApplication {
 				Source source1 = new Source();
 				source1.addProperty("user.name","shyam");
 				applicationProperty1.setSource(source1);
-				propertyService.updatePropertyByKey(applicationProperty1);
+				propertyService.upsertPropertyByKey(applicationProperty1);
 			}
 		};
     }

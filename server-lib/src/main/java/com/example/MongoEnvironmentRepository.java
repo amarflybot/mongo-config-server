@@ -32,11 +32,9 @@ public class MongoEnvironmentRepository implements EnvironmentRepository {
     private static final String DEFAULT_LABEL = "master";
 
     private MongoTemplate mongoTemplate;
-    private MapFlattener mapFlattener;
 
     public MongoEnvironmentRepository(MongoTemplate mongoTemplate) {
         this.mongoTemplate = mongoTemplate;
-        this.mapFlattener = new MapFlattener();
     }
 
     @Override
@@ -184,13 +182,4 @@ public class MongoEnvironmentRepository implements EnvironmentRepository {
         }
 
     }
-
-    private static class MapFlattener extends YamlProcessor {
-
-        public Map<String, Object> flatten(Map<String, Object> source) {
-            return getFlattenedMap(source);
-        }
-
-    }
-
 }
