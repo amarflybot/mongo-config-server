@@ -48,15 +48,18 @@ public class MongoEnvironmentRepositoryTests {
         MongoTemplate mongoTemplate = this.context.getBean(MongoTemplate.class);
         mongoTemplate.dropCollection("testapp");
         MongoEnvironmentRepository.MongoPropertySource ps = new MongoEnvironmentRepository.MongoPropertySource();
-        ps.getSource().put("testkey", "testval");
+        Map<String, Object> map = new HashMap<>();
+        map.put("key1","val1");
+        map.put("key2","val2");
+        ps.getSource().put(MongoEnvironmentRepository.PROPERTY, map);
         mongoTemplate.save(ps, "testapp");
         // Test
         EnvironmentRepository repository = this.context.getBean(EnvironmentRepository.class);
         Environment environment = repository.findOne("testapp", "default", null);
         assertEquals("testapp-default", environment.getPropertySources().get(0).getName());
         assertEquals(1, environment.getPropertySources().size());
-        assertEquals(true, environment.getPropertySources().get(0).getSource().containsKey("testkey"));
-        assertEquals("testval", environment.getPropertySources().get(0).getSource().get("testkey"));
+        assertEquals(true, environment.getPropertySources().get(0).getSource().containsKey("key1"));
+        assertEquals("val1", environment.getPropertySources().get(0).getSource().get("key1"));
     }
 
     @Test
@@ -70,8 +73,8 @@ public class MongoEnvironmentRepositoryTests {
         mongoTemplate.dropCollection("testapp");
         MongoEnvironmentRepository.MongoPropertySource ps = new MongoEnvironmentRepository.MongoPropertySource();
         Map<String, String> inner = new HashMap<String, String>();
-        inner.put("inner", "value");
-        ps.getSource().put("outer", inner);
+        inner.put("outer.inner", "value");
+        ps.getSource().put(MongoEnvironmentRepository.PROPERTY, inner);
         mongoTemplate.save(ps, "testapp");
         // Test
         EnvironmentRepository repository = this.context.getBean(EnvironmentRepository.class);
@@ -94,8 +97,10 @@ public class MongoEnvironmentRepositoryTests {
         MongoEnvironmentRepository.MongoPropertySource ps = new MongoEnvironmentRepository.MongoPropertySource();
         ps.setProfile("confprofile");
         ps.setLabel("conflabel");
-        ps.getSource().put("profile", "sourceprofile");
-        ps.getSource().put("label", "sourcelabel");
+        Map<String, String> inner = new HashMap<String, String>();
+        inner.put("profile", "sourceprofile");
+        inner.put("label", "sourcelabel");
+        ps.getSource().put(MongoEnvironmentRepository.PROPERTY, inner);
         mongoTemplate.save(ps, "testapp");
         // Test
         EnvironmentRepository repository = this.context.getBean(EnvironmentRepository.class);

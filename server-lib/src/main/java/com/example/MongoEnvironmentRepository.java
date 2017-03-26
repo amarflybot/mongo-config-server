@@ -83,10 +83,12 @@ public class MongoEnvironmentRepository implements EnvironmentRepository {
 
     public static Map<String, Object> beautifySource(Map<String, Object> source) {
         Map<String,Object> beautifySource = new LinkedHashMap<>();
-        source.forEach((key, val) -> {
-            String value = String.valueOf(val);
-            beautifySource.put(key, value.replace(MAP_KEY_DOT_REPLACEMENT,"."));
-        });
+        if (source != null) {
+            source.forEach((key, val) -> {
+                String value = String.valueOf(val);
+                beautifySource.put(key, value.replace(MAP_KEY_DOT_REPLACEMENT,"."));
+            });
+        }
         return beautifySource;
     }
 
