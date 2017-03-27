@@ -1,13 +1,11 @@
 package com.example;
 
 import com.example.model.ApplicationProperty;
-import com.example.model.Source;
 import com.mongodb.WriteResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Repository;
 
 import java.util.*;
@@ -50,23 +48,17 @@ public class ApplicationPropertyDao {
      *
      * @param applicationProperty
      */
-    public void upsertPropertyByKey(ApplicationProperty applicationProperty) {
-        final Map.Entry<String, Object> objectEntry = applicationProperty.getSource().getAllProperties().entrySet().iterator().next();
+    public ApplicationProperty upsertPropertyByKey(ApplicationProperty applicationProperty) {
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
-        ApplicationProperty applicationProperties =
-                mongoTemplate.findOne(query, ApplicationProperty.class, applicationProperty.getApplicationName());
-        String uglifySource = MongoEnvironmentRepository.uglifySource(objectEntry.getKey());
-        Object o = applicationProperties.getSource().getAllProperties().get(objectEntry.getKey());
-        if (o == null) {
-            System.out.println("Property not found adding new property "+objectEntry.getKey()
-                    + " " + objectEntry.getValue());
-        }
-        applicationProperties.getSource().getAllProperties().put(objectEntry.getKey(), objectEntry.getValue());
-        Map<String, Object> objectToSave = getStringObjectMap(applicationProperties);
+        ApplicationProperty latestApplicationProperty = getLatestApplicationProperty(applicationProperty, query);
+        applicationProperty.getSource().getAllProperties().forEach((key,val) -> {
+            latestApplicationProperty.getSource().getAllProperties().put(key,val);
+        });
+        Map<String, Object> objectToSave = getStringObjectMap(latestApplicationProperty);
         mongoTemplate.save(objectToSave, applicationProperty.getApplicationName());
-
+        return getLatestApplicationProperty(applicationProperty, query);
     }
 
     /**
@@ -77,15 +69,14 @@ public class ApplicationPropertyDao {
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
-        ApplicationProperty applicationProperties =
-                mongoTemplate.findOne(query, ApplicationProperty.class, applicationProperty.getApplicationName());
+        ApplicationProperty latestApplicationProperty = getLatestApplicationProperty(applicationProperty, query);
 
         applicationProperty.getSource().getAllProperties().forEach((key, val) -> {
-            applicationProperties.getSource().addProperty(key, val);
+            latestApplicationProperty.getSource().addProperty(key, val);
         });
 
-        Map<String, Object> stringObjectMap = getStringObjectMap(applicationProperties);
-        mongoTemplate.save(stringObjectMap, applicationProperties.getApplicationName());
+        Map<String, Object> stringObjectMap = getStringObjectMap(latestApplicationProperty);
+        mongoTemplate.save(stringObjectMap, latestApplicationProperty.getApplicationName());
 
     }
 
@@ -97,15 +88,14 @@ public class ApplicationPropertyDao {
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
-        ApplicationProperty applicationProperties =
-                mongoTemplate.findOne(query, ApplicationProperty.class, applicationProperty.getApplicationName());
+        ApplicationProperty latestApplicationProperty = getLatestApplicationProperty(applicationProperty, query);
 
         applicationProperty.getSource().getAllProperties().forEach((key, val) -> {
-            applicationProperties.getSource().getAllProperties().remove(key);
+            latestApplicationProperty.getSource().getAllProperties().remove(key);
         });
 
-        Map<String, Object> stringObjectMap = getStringObjectMap(applicationProperties);
-        mongoTemplate.save(stringObjectMap, applicationProperties.getApplicationName());
+        Map<String, Object> stringObjectMap = getStringObjectMap(latestApplicationProperty);
+        mongoTemplate.save(stringObjectMap, latestApplicationProperty.getApplicationName());
     }
 
     /**
@@ -127,9 +117,14 @@ public class ApplicationPropertyDao {
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
+        ApplicationProperty latestApplicationProperty = getLatestApplicationProperty(applicationProperty, query);
+        return latestApplicationProperty;
+    }
+
+    private ApplicationProperty getLatestApplicationProperty(ApplicationProperty applicationProperty, Query query) {
         List<ApplicationProperty> applicationProperties =
                 mongoTemplate.find(query, ApplicationProperty.class, applicationProperty.getApplicationName());
-        return applicationProperties.get(applicationProperties.size()-1);
+        return applicationProperties.get(applicationProperties.size() - 1);
     }
 
     public List<ApplicationProperty> getByProfile(ApplicationProperty applicationProperty) {
@@ -145,12 +140,12 @@ public class ApplicationPropertyDao {
         return applicationProperties;
     }
 
-    public void deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
+    public boolean deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
         Query query = new Query();
         query.addCriteria(Criteria.where(PROFILE).in(Arrays.asList(applicationProperty.getProfile())));
         query.addCriteria(Criteria.where(LABEL).in(Arrays.asList(applicationProperty.getLabel())));
         WriteResult remove = mongoTemplate.remove(query, ApplicationProperty.class, applicationProperty.getApplicationName());
-
+        return remove.wasAcknowledged();
     }
 
     public List<String> getAll() {

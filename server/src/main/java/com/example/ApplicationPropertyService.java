@@ -47,8 +47,8 @@ public class ApplicationPropertyService {
      *
      * @param applicationProperty
      */
-    public void upsertPropertyByKey(ApplicationProperty applicationProperty){
-        propertyDao.upsertPropertyByKey(applicationProperty);
+    public ApplicationProperty upsertPropertyByKey(ApplicationProperty applicationProperty){
+        return propertyDao.upsertPropertyByKey(applicationProperty);
     }
 
     /**
@@ -63,8 +63,9 @@ public class ApplicationPropertyService {
      *
      * @param applicationProperty
      */
-    public void removePropertyByKey(ApplicationProperty applicationProperty){
+    public boolean deletePropertyByApplication(ApplicationProperty applicationProperty){
         propertyDao.removePropertyByKey(applicationProperty);
+        return true;
     }
 
 
@@ -72,11 +73,12 @@ public class ApplicationPropertyService {
         return propertyDao.getByProfile(applicationProperty);
     }
 
-    public void deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
-        propertyDao.deleteByProfileAndApplicationName(applicationProperty);
+    public boolean deleteByProfileAndApplicationName(ApplicationProperty applicationProperty) {
+        return propertyDao.deleteByProfileAndApplicationName(applicationProperty);
     }
 
     public List<String> getAll() {
         return propertyDao.getAll();
     }
+
 }

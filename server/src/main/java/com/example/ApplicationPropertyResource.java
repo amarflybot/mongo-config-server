@@ -23,7 +23,6 @@ public class ApplicationPropertyResource {
     ApplicationPropertyService service;
 
     /**
-     *
      * @param profile
      * @param applicationName
      * @param properties
@@ -31,54 +30,62 @@ public class ApplicationPropertyResource {
      */
     @PutMapping(value = "/{profile}/{applicationName}")
     ResponseEntity<?> addNewApplication(@PathVariable String profile,
-                          @PathVariable String applicationName,
-                          @RequestBody Map properties) {
+                                        @PathVariable String applicationName,
+                                        @RequestBody Map properties) {
         Source source = new Source(properties);
         ApplicationProperty applicationProperty =
-                new ApplicationProperty("master",profile,source,applicationName);
+                new ApplicationProperty("master", profile, source, applicationName);
         service.save(applicationProperty);
         return ResponseEntity.ok(applicationProperty);
+    }
+
+    @DeleteMapping(value = "/property/{profile}/{applicationName}")
+    ResponseEntity<?> deletePropertyByApplication(@PathVariable String profile,
+                                                  @PathVariable String applicationName,
+                                                  @RequestBody Map properties) {
+        Source source = new Source(properties);
+        ApplicationProperty applicationProperty =
+                new ApplicationProperty("master", profile, source, applicationName);
+        boolean deleteByProfileAndApplicationName = service.deletePropertyByApplication(applicationProperty);
+        return ResponseEntity.ok(deleteByProfileAndApplicationName);
     }
 
     @DeleteMapping(value = "/{profile}/{applicationName}")
     ResponseEntity<?> deleteApplication(@PathVariable String profile,
                                         @PathVariable String applicationName) {
         ApplicationProperty applicationProperty =
-                new ApplicationProperty("master",profile,null,applicationName);
-        service.deleteByProfileAndApplicationName(applicationProperty);
-        return ResponseEntity.ok(applicationProperty);
+                new ApplicationProperty("master", profile, null, applicationName);
+        boolean deleteByProfileAndApplicationName = service.deleteByProfileAndApplicationName(applicationProperty);
+        return ResponseEntity.ok(deleteByProfileAndApplicationName);
     }
 
     /**
-     *
      * @param profile
      * @param applicationName
      * @return
      */
     @GetMapping(value = "/{profile}/{applicationName}")
     ResponseEntity<?> getApplicationByProfileAndApplicationName(@PathVariable String profile,
-                                                                @PathVariable String applicationName){
+                                                                @PathVariable String applicationName) {
         ApplicationProperty applicationProperty =
-                new ApplicationProperty("master",profile,null,applicationName);
+                new ApplicationProperty("master", profile, null, applicationName);
         ApplicationProperty applicationPropertyReturned = service.getByProfileAndApplicationName(applicationProperty);
         return ResponseEntity.ok(applicationPropertyReturned);
     }
 
     /**
-     *
      * @param profile
      * @return
      */
     @GetMapping(value = "/{profile}")
-    ResponseEntity<?> getApplicationByProfile(@PathVariable String profile){
+    ResponseEntity<?> getApplicationByProfile(@PathVariable String profile) {
         ApplicationProperty applicationProperty =
-                new ApplicationProperty("master",profile,null,null);
+                new ApplicationProperty("master", profile, null, null);
         List<ApplicationProperty> applicationPropertyReturned = service.getByProfile(applicationProperty);
         return ResponseEntity.ok(applicationPropertyReturned);
     }
 
     /**
-     *
      * @param profile
      * @param applicationName
      * @param property
@@ -87,16 +94,16 @@ public class ApplicationPropertyResource {
     @PostMapping(value = "/{profile}/{applicationName}")
     ResponseEntity<?> upsertPropertyByKey(@PathVariable String profile,
                                           @PathVariable String applicationName,
-                                          @RequestBody Map property){
+                                          @RequestBody Map property) {
         Source source = new Source(property);
         ApplicationProperty applicationProperty =
-                new ApplicationProperty("master",profile,source,applicationName);
-        service.upsertPropertyByKey(applicationProperty);
-        return ResponseEntity.ok(applicationProperty);
+                new ApplicationProperty("master", profile, source, applicationName);
+        ApplicationProperty applicationPropertyAfterOperation = service.upsertPropertyByKey(applicationProperty);
+        return ResponseEntity.ok(applicationPropertyAfterOperation);
     }
 
     @GetMapping
-    ResponseEntity<?> getAllApplications(){
+    ResponseEntity<?> getAllApplications() {
         List<String> allApps = service.getAll();
         return ResponseEntity.ok(allApps);
     }
