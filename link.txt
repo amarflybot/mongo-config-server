@@ -109,3 +109,8 @@ $('.modal-footer .btn-primary').click(function() {
 
 BootStrap 3.3.7
 JQuery 3.1.1
+
+
+https://github.com/institut-de-genomique/Ultimate-DataTable/
+
+http://mgcrea.github.io/angular-strap/#/navbar
