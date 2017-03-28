@@ -13,7 +13,7 @@ import java.util.Map;
  * Created by amarendra on 24/3/17.
  */
 @RestController
-@RequestMapping("/app")
+@RequestMapping("/api")
 public class ApplicationPropertyResource {
 
     /**
