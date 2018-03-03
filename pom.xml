@@ -22,12 +22,15 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>1.8</java.version>
+		<mapstruct.version>1.2.0.Final</mapstruct.version>
+		<maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
 	</properties>
 
 	<modules>
 		<module>server-lib</module>
-		<module>server</module>
 		<module>client-spring3</module>
+		<module>frontend</module>
+		<module>server</module>
 	</modules>
 
 	<dependencyManagement>

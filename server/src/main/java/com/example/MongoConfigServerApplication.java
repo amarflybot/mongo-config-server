@@ -1,7 +1,9 @@
 package com.example;
 
-import com.example.model.ApplicationProperty;
-import com.example.model.Source;
+import com.example.domain.ApplicationProperty;
+import com.example.domain.Source;
+import com.example.service.ApplicationPropertyService;
+import com.example.service.dto.ApplicationPropertyDTO;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -21,7 +23,7 @@ public class MongoConfigServerApplication {
 			@Override
 			public void run(String... strings) throws Exception {
 				propertyService.drop("TestCollection");
-				ApplicationProperty applicationProperty = new ApplicationProperty();
+				ApplicationPropertyDTO applicationProperty = new ApplicationPropertyDTO();
 				applicationProperty.setApplicationName("TestCollection");
 				applicationProperty.setProfile("dev");
 				applicationProperty.setLabel("master");
@@ -31,7 +33,7 @@ public class MongoConfigServerApplication {
 				source.addProperty("user.name","ram");
 				applicationProperty.setSource(source);
 				propertyService.save(applicationProperty);
-				ApplicationProperty applicationProperty1 = new ApplicationProperty();
+				ApplicationPropertyDTO applicationProperty1 = new ApplicationPropertyDTO();
 				applicationProperty1.setApplicationName("TestCollection");
 				applicationProperty1.setProfile("dev");
 				applicationProperty1.setLabel("master");

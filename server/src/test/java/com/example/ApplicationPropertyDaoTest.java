@@ -1,7 +1,8 @@
 package com.example;
 
-import com.example.model.ApplicationProperty;
-import com.example.model.Source;
+import com.example.repository.ApplicationPropertyDao;
+import com.example.domain.ApplicationProperty;
+import com.example.domain.Source;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.mock.mockito.MockBean;

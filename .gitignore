@@ -25,3 +25,4 @@ nbdist/
 node_modules/
 server/src/main/resources/static/bower_components/
 PhantomJS_2.1.1*
+ui-src
